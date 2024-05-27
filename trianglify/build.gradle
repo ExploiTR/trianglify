@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 
 ext {
-
     bintrayRepo = 'trianglify'
     bintrayName = 'trianglify'   // Has to be same as library module name
 
@@ -15,7 +14,7 @@ ext {
 
     siteUrl = 'https://github.com/sdsmdg/trianglify'
     gitUrl = 'https://github.com/sdsmdg/trianglify.git'
-    githubRepository= 'sdsmdg/trianglify'
+    githubRepository = 'sdsmdg/trianglify'
 
     libraryVersion = '1.0.0'
     libraryDescription = 'Generate beautiful view for android.'
@@ -30,14 +29,10 @@ ext {
 }
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '26.0.2'
-
+    compileSdkVersion 34
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 27
         targetSdkVersion 27
-        versionCode 0
-        versionName "1.0.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -48,19 +43,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
+
+    namespace 'com.sdsmdg.kd.trianglify'
+    lint {
         abortOnError false
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+// AndroidX testing dependencies
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+        exclude group: 'androidx.annotation', module: 'annotation'
     })
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.13.0'
+
+// AndroidX AppCompat library
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+// JUnit 4 dependency for AndroidX
+    testImplementation 'junit:junit:4.13.2'
+
+// Mockito-core dependency for AndroidX
+    testImplementation 'org.mockito:mockito-core:3.0.0'
 
 }
 

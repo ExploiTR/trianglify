@@ -7,15 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,14 +18,20 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.sdsmdg.kd.trianglify.models.Palette;
 import com.sdsmdg.kd.trianglify.views.TrianglifyView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -232,35 +231,28 @@ public class MainActivity extends AppCompatActivity {
     // Click handlers for action bar menu items
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                try {
-                    exportImage();
-                } catch (IOException e) {
-                    Toast.makeText(MainActivity.this,
-                            "Storage access failed!",Toast.LENGTH_LONG).show();
-                }
-                break;
-            case R.id.action_about:
-                Intent aboutActivityIntent = new Intent(this, AboutActivity.class);
-                startActivity(aboutActivityIntent);
-                break;
-            case R.id.action_refresh:
-                randomizeTrianglifyParameters(trianglifyView);
-                trianglifyView.generateAndInvalidate();
-                break;
-            case R.id.custom_palette_picker:
-                Intent customPalettePickerIntent = new Intent(this, CustomPalettePickerActivity.class);
-                customPalettePickerIntent.putExtra(getResources().getString(R.string.palette_color_array),
-                        trianglifyView.getPalette().getColors());
-                startActivityForResult(customPalettePickerIntent, 1);
-                customPaletteCheckbox.setChecked(true);
-                break;
-            case R.id.action_set_wall:
-                setWallpaper(MainActivity.this.trianglifyView);
-                break;
-            default:
-                break;
+        int id = item.getItemId();
+
+        if (id == R.id.action_save) {
+            try {
+                exportImage();
+            } catch (IOException e) {
+                Toast.makeText(MainActivity.this, "Storage access failed!", Toast.LENGTH_LONG).show();
+            }
+        } else if (id == R.id.action_about) {
+            Intent aboutActivityIntent = new Intent(this, AboutActivity.class);
+            startActivity(aboutActivityIntent);
+        } else if (id == R.id.action_refresh) {
+            randomizeTrianglifyParameters(trianglifyView);
+            trianglifyView.generateAndInvalidate();
+        } else if (id == R.id.custom_palette_picker) {
+            Intent customPalettePickerIntent = new Intent(this, CustomPalettePickerActivity.class);
+            customPalettePickerIntent.putExtra(getResources().getString(R.string.palette_color_array),
+                    trianglifyView.getPalette().getColors());
+            startActivityForResult(customPalettePickerIntent, 1);
+            customPaletteCheckbox.setChecked(true);
+        } else if (id == R.id.action_set_wall) {
+            setWallpaper(MainActivity.this.trianglifyView);
         }
 
         return true;
@@ -304,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void addImageToGallery(Bitmap bitmap, Context context) throws IOException {
         String timeStamp = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".png";
-        OutputStream os = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + timeStamp);
+        OutputStream os = Files.newOutputStream(Paths.get(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + timeStamp));
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
         os.flush();
         os.close();
@@ -341,7 +333,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_CODE:
                 if (grantResults.length > 0
@@ -350,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
                         exportImage();
                     } catch (IOException e) {
                         Toast.makeText(MainActivity.this,
-                                "Storage access failed!",Toast.LENGTH_LONG).show();
+                                "Storage access failed!", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Toast.makeText(this, "Storage access failed, check permission",
