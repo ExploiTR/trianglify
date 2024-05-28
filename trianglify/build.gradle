@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
+/*
 ext {
     bintrayRepo = 'trianglify'
     bintrayName = 'trianglify'   // Has to be same as library module name
@@ -26,20 +28,20 @@ ext {
     licenseName = 'MIT License'
     licenseUrl = 'https://github.com/sdsmdg/trianglify/blob/develop/LICENSE.md'
     allLicenses = ["MIT"]
-}
+}*/
 
 android {
-    compileSdkVersion 34
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 27
-        targetSdkVersion 27
+        minSdkVersion 16
+        targetSdkVersion 34
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -53,21 +55,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-// AndroidX testing dependencies
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
         exclude group: 'androidx.annotation', module: 'annotation'
     })
-
-// AndroidX AppCompat library
     implementation 'androidx.appcompat:appcompat:1.6.1'
 
-// JUnit 4 dependency for AndroidX
     testImplementation 'junit:junit:4.13.2'
-
-// Mockito-core dependency for AndroidX
-    testImplementation 'org.mockito:mockito-core:3.0.0'
-
+    testImplementation 'org.mockito:mockito-core:5.12.0'
 }
-
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'

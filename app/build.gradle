@@ -1,18 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 34
+    compileSdk 34
     defaultConfig {
         applicationId "com.sdsmdg.kd.trianglifyexample"
-        minSdkVersion 27
-        targetSdkVersion 27
+        minSdkVersion 16
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -21,29 +22,28 @@ android {
     lint {
         abortOnError false
     }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-// AndroidX Test dependencies
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
         exclude group: 'androidx.annotation', module: 'annotation'
     })
 
-//----Testing frameworks
-
     implementation project(':trianglify')
 
-// AndroidX AppCompat and ConstraintLayout
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-// Color Picker library (Check for AndroidX compatibility)
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'
 
-// JUnit and Mockito for AndroidX
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:3.0.0'
+    testImplementation 'org.mockito:mockito-core:5.12.0'
 
 }
