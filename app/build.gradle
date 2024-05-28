@@ -1,7 +1,11 @@
-apply plugin: 'com.android.application'
+plugins {
+    alias(libs.plugins.android.application)
+}
 
 android {
+    namespace 'com.sdsmdg.kd.trianglifyexample'
     compileSdk 34
+
     defaultConfig {
         applicationId "com.sdsmdg.kd.trianglifyexample"
         minSdkVersion 16
@@ -18,32 +22,25 @@ android {
         }
     }
 
-    namespace 'com.sdsmdg.kd.trianglifyexample'
-    lint {
-        abortOnError false
-    }
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
+    androidTestImplementation(libs.espresso.core, {
         exclude group: 'androidx.annotation', module: 'annotation'
     })
 
     implementation project(':trianglify')
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.github.QuadFlask:colorpicker:0.0.15'
-
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.12.0'
+    implementation libs.appcompat
+    implementation libs.constraintlayout
+    implementation libs.colorpicker
+    testImplementation libs.junit
+    testImplementation libs.mockito.core
 
 }
