@@ -37,6 +37,7 @@ publishing {
             groupId = 'com.sdsmdg.kd'
             artifactId = 'trianglify'
             version = '2.0.0'
+
         }
     }
 }
