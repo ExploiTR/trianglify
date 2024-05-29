@@ -98,7 +98,7 @@ import java.util.Random;
     }
 
     public List<Vector2D> generate() {
-        Vector2D center = new Vector2D(width / 2, height / 2);
+        Vector2D center = new Vector2D((float) width / 2, (float) height / 2);
 
         grid.clear();
 

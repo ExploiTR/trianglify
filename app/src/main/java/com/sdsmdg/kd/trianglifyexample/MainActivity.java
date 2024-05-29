@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.sdsmdg.kd.trianglify.models.Palette;
+import com.sdsmdg.kd.trianglify.utilities.Utilities;
 import com.sdsmdg.kd.trianglify.views.TrianglifyView;
 
 import java.io.File;
@@ -212,7 +212,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void randomizeTrianglifyParameters(TrianglifyView trianglifyView) {
         Random rnd = new Random(System.currentTimeMillis());
-        trianglifyView.setCellSize(dpToPx(rnd.nextInt(10) + 35)).setPalette(Palette.getPalette(rnd.nextInt(28))).setRandomColoring(rnd.nextInt(2) == 0).setFillTriangle(rnd.nextInt(2) == 0).setDrawStrokeEnabled(rnd.nextInt(2) == 0).setVariance(rnd.nextInt(60));
+        trianglifyView.
+                setCellSize(Utilities.dpToPx(rnd.nextInt(10) + 35, this))
+                .setPalette(Palette.getPalette(rnd.nextInt(28))).setRandomColoring(rnd.nextInt(2) == 0)
+                .setFillTriangle(rnd.nextInt(2) == 0)
+                .setDrawStrokeEnabled(rnd.nextInt(2) == 0)
+                .setVariance(rnd.nextInt(60));
 
         if (!trianglifyView.isFillTriangle() && !trianglifyView.isDrawStrokeEnabled()) {
             trianglifyView.setDrawStrokeEnabled(true);
@@ -221,16 +226,6 @@ public class MainActivity extends AppCompatActivity {
 
         updateUIElements(trianglifyView);
     }
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
-
-//    public int pxToDp(int px) {
-//        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-//        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-//    }
 
     // Click handlers for action bar menu items
     @Override
@@ -267,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.hasExtra(CustomPalettePickerActivity.CUSTOM_PALETTE_COLOR_ARRAY)) {
+        if (resultCode == RESULT_OK && data != null && data.hasExtra(CustomPalettePickerActivity.CUSTOM_PALETTE_COLOR_ARRAY)) {
             int[] colors = data.getIntArrayExtra(CustomPalettePickerActivity.CUSTOM_PALETTE_COLOR_ARRAY);
             if (colors == null) return;
             customPalette = new Palette(colors);
@@ -291,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Feature removed", Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(this, "Unable to generate image, please try again", Toast.LENGTH_LONG).show();
-
         }
     }
 

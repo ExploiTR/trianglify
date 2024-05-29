@@ -1,7 +1,5 @@
 package com.sdsmdg.kd.trianglifyexample;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,109 +7,95 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorSelectedListener;
-import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.sdsmdg.kd.trianglify.models.Palette;
 import com.sdsmdg.kd.trianglify.views.TrianglifyView;
 
 public class CustomPalettePickerActivity extends AppCompatActivity {
-    private static final String TAG = "CustomPalleteActivity";
+    private static final String TAG = "CustomPaletteActivity";
+    public static final String CUSTOM_PALETTE_COLOR_ARRAY = "Custom Palette Color Array";
 
     private Palette palette;
     private TrianglifyView trianglifyView;
-    private Context context;
-    private ImageView[] imageViews = new ImageView[9];
+    private final ImageView[] imageViews = new ImageView[9];
     private int[] colors = {Color.BLACK, Color.BLUE, Color.BLACK, Color.CYAN, Color.DKGRAY, Color.GREEN, Color.RED, Color.MAGENTA, Color.LTGRAY};
-    public static final String CUSTOM_PALETTE_COLOR_ARRAY = "Custom Palette Color Array";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActionBar actionBar = getSupportActionBar();
         setContentView(R.layout.activity_custom_palette_picker);
 
-        try {
-            if (actionBar != null) {
+        setupActionBar();
+        initializeColors();
+        initializeTrianglifyView();
+        setupImageViews();
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            try {
                 actionBar.setDisplayHomeAsUpEnabled(true);
-            }
-        } catch (java.lang.NullPointerException e) {
-            Log.e(TAG, "Null pointer exception in generating back action button");
-        }
-
-        try {
-            if (actionBar != null) {
                 actionBar.setTitle("Custom Palette Picker");
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Error setting up action bar", e);
             }
-        } catch (java.lang.NullPointerException e) {
-            Log.e(TAG, "Null pointer exception on setting About activity title");
         }
+    }
 
-        colors = getIntent().getIntArrayExtra(getResources().getString(R.string.palette_color_array));
+    private void initializeColors() {
+        int[] receivedColors = getIntent().getIntArrayExtra(getResources().getString(R.string.palette_color_array));
+        if (receivedColors != null) {
+            colors = receivedColors;
+        }
+    }
 
-        context = this;
-
+    private void initializeTrianglifyView() {
         trianglifyView = findViewById(R.id.trianglify_custom_palette_view);
-        trianglifyView.setPalette(new Palette(colors));
+        palette = new Palette(colors);
+        trianglifyView.setPalette(palette);
         trianglifyView.smartUpdate();
+    }
 
+    private void setupImageViews() {
         for (int i = 0; i < imageViews.length; i++) {
-            String imageViewNumber = "custom_palette_c" + String.valueOf(i);
-            int resID = getResources().getIdentifier(imageViewNumber, "id", getPackageName());
+            //I mean it works? lol
+            int resID = getResources().getIdentifier("custom_palette_c" + i, "id", getPackageName());
             imageViews[i] = findViewById(resID);
-            imageViews[i].setBackgroundColor(colors[i] + 0xff000000);
-
-            final int finalI = i;
-
-            imageViews[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final AlertDialog dialog = ColorPickerDialogBuilder
-                            .with(context)
-                            .initialColor(colors[finalI] + 0xff000000)
-                            .setTitle("Choose Color")
-                            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                            .density(9)
-                            .showColorEdit(true)
-                            .lightnessSliderOnly()
-                            .setColorEditTextColor(0xff000000)
-                            .showColorPreview(true)
-                            .setOnColorSelectedListener(new OnColorSelectedListener() {
-                                @Override
-                                public void onColorSelected(int color) {
-                                }
-                            })
-                            .setPositiveButton("ok", new ColorPickerClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int color, Integer[] allColors) {
-                                    imageViews[finalI].setBackgroundColor(color);
-                                    colors[finalI] = color - 0xff000000;
-                                    palette = new Palette(colors);
-                                    trianglifyView.setPalette(palette);
-                                    trianglifyView.smartUpdate();
-                                }
-                            })
-                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .build();
-
-                    dialog.show();
-                }
-            });
+            imageViews[i].setBackgroundColor(colors[i] | 0xff000000);
+            setupColorPickerForImageView(imageViews[i], i);
         }
+    }
+
+    private void setupColorPickerForImageView(ImageView imageView, int index) {
+        imageView.setOnClickListener(v -> ColorPickerDialogBuilder
+                .with(this)
+                .initialColor(colors[index] | 0xff000000)
+                .setTitle("Choose Color")
+                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                .density(9)
+                .showColorEdit(true)
+                .lightnessSliderOnly()
+                .setColorEditTextColor(0xff000000)
+                .showColorPreview(true)
+                .setPositiveButton("ok", (dialog, color, allColors) -> updateColor(index, color))
+                .setNegativeButton("cancel", (dialog, which) -> dialog.dismiss())
+                .build()
+                .show());
+    }
+
+    private void updateColor(int index, int color) {
+        imageViews[index].setBackgroundColor(color);
+        colors[index] = color & 0x00ffffff; // Remove alpha
+        palette = new Palette(colors);
+        trianglifyView.setPalette(palette);
+        trianglifyView.smartUpdate();
     }
 
     @Override
@@ -121,19 +105,23 @@ public class CustomPalettePickerActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (itemId == R.id.custom_palette_ok) {
-            Intent intent = new Intent();
-            intent.putExtra(CUSTOM_PALETTE_COLOR_ARRAY, colors);
-            setResult(RESULT_OK, intent);
-            onBackPressed();
+        } else if (item.getItemId() == R.id.custom_palette_ok) {
+            savePaletteAndExit();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void savePaletteAndExit() {
+        Intent intent = new Intent();
+        intent.putExtra(CUSTOM_PALETTE_COLOR_ARRAY, colors);
+        setResult(RESULT_OK, intent);
+        onBackPressed();
     }
 }

@@ -4,8 +4,8 @@ package com.sdsmdg.kd.trianglify.presenters;
 import android.os.AsyncTask;
 
 import com.sdsmdg.kd.trianglify.models.Triangulation;
-import com.sdsmdg.kd.trianglify.utilities.colorizers.Colorizer;
-import com.sdsmdg.kd.trianglify.utilities.colorizers.FixedPointsColorizer;
+import com.sdsmdg.kd.trianglify.utilities.colorizers.ColorInterface;
+import com.sdsmdg.kd.trianglify.utilities.colorizers.FixedPointsColorInterface;
 import com.sdsmdg.kd.trianglify.utilities.patterns.Circle;
 import com.sdsmdg.kd.trianglify.utilities.patterns.Patterns;
 import com.sdsmdg.kd.trianglify.utilities.patterns.Rectangle;
@@ -89,34 +89,30 @@ public class Presenter {
 
     /**
      * Generates a grid on basis of selected grid type
+     *
      * @return Grid of Vector2D
      */
     private List<Vector2D> generateGrid() {
         int gridType = view.getTypeGrid();
         Patterns patterns;
 
-        switch (gridType) {
-            case TrianglifyViewInterface.GRID_RECTANGLE:
-                patterns = new Rectangle(
-                        view.getBleedX(), view.getBleedY(), view.getGridHeight(),
-                        view.getGridWidth(), view.getCellSize(), view.getVariance());
-                break;
-            case TrianglifyViewInterface.GRID_CIRCLE:
-                patterns = new Circle(
-                        view.getBleedX(), view.getBleedY(), 8, view.getGridHeight(),
-                        view.getGridWidth(), view.getCellSize(), view.getVariance());
-                break;
-            default:
-                patterns = new Rectangle(
-                        view.getBleedX(), view.getBleedY(), view.getGridHeight(),
-                        view.getGridWidth(), view.getCellSize(), view.getVariance());
-                break;
+        if (gridType == TrianglifyViewInterface.GRID_CIRCLE) {
+            patterns = new Circle(
+                    view.getBleedX(), view.getBleedY(), 8, view.getGridHeight(),
+                    view.getGridWidth(), view.getCellSize(), view.getVariance());
+        } else {
+            patterns = new Rectangle(
+                    view.getBleedX(), view.getBleedY(), view.getGridHeight(),
+                    view.getGridWidth(), view.getCellSize(), view.getVariance());
         }
+
         return patterns.generate();
     }
 
+
     /**
      * Generates soup corresponding to current instance parameters
+     *
      * @return triangulation generated
      */
     private Triangulation getSoup() {
@@ -138,6 +134,7 @@ public class Presenter {
 
     /**
      * Creates triangles from a list of points
+     *
      * @param inputGrid Grid of points for generating triangles
      * @return List of Triangles generated from list of input points
      */
@@ -153,14 +150,15 @@ public class Presenter {
 
     /**
      * Colors each triangle in triangulation and stores color as triangle's color variable
+     *
      * @param inputTriangulation triangulation to color
      * @return Colored triangulation of input triangulation
      */
     private Triangulation generateColoredSoup(Triangulation inputTriangulation) {
-        Colorizer colorizer = new FixedPointsColorizer(inputTriangulation,
-                view.getPalette(), view.getGridHeight() + 2*view.getBleedY(),
-                view.getGridWidth() + 2*view.getBleedX(), view.isRandomColoringEnabled());
-        return colorizer.getColororedTriangulation();
+        ColorInterface ColorInterface = new FixedPointsColorInterface(inputTriangulation,
+                view.getPalette(), view.getGridHeight() + 2 * view.getBleedY(),
+                view.getGridWidth() + 2 * view.getBleedX(), view.isRandomColoringEnabled());
+        return ColorInterface.getColororedTriangulation();
     }
 
     public void clearSoup() {

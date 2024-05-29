@@ -8,7 +8,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 22
         targetSdkVersion 34
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -24,6 +24,12 @@ android {
         abortOnError false
     }
 
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -37,7 +43,6 @@ publishing {
             groupId = 'com.sdsmdg.kd'
             artifactId = 'trianglify'
             version = '2.0.0'
-
         }
     }
 }

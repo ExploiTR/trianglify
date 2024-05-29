@@ -15,11 +15,11 @@ public class ExtendedColor extends android.graphics.Color {
     public int g;
     public int b;
 
-    public ExtendedColor(int palleteColor) {
+    public ExtendedColor(int paletteColor) {
         this(0xFF,
-             (palleteColor >> 4*4),
-             ((palleteColor >> 4*2) & 0xFF),
-             ((palleteColor) & 0xFF));
+             (paletteColor >> 4*4),
+             ((paletteColor >> 4*2) & 0xFF),
+             ((paletteColor) & 0xFF));
     }
 
     public ExtendedColor(int r, int g, int b) {

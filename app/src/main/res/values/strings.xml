@@ -23,4 +23,11 @@
     <!-- About Activity strings -->
     <string name="about_activity_title">About</string>
     <string name="about_activity_version">Version</string>
+    <string name="fill_triangles">Fill Triangles</string>
+    <string name="draw_strokes">Draw Strokes</string>
+    <string name="custom_palette">Custom Palette</string>
+    <string name="random_coloring">Random Coloring</string>
+    <string name="palette">Palette:</string>
+    <string name="cell_size">Cell Size:</string>
+    <string name="variance">Variance:</string>
 </resources>

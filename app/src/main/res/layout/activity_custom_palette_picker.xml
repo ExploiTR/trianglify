@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_custom_palette_picker"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,126 +9,136 @@
 
     <com.sdsmdg.kd.trianglify.views.TrianglifyView
         android:id="@+id/trianglify_custom_palette_view"
-        android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cellSize="30dp"
-        app:variance="5dp"
+        android:layout_centerHorizontal="true"
         app:bleedX="50dp"
         app:bleedY="50dp"
-        app:palette="RdBu"
-        app:gridType="rectangle"
+        app:cellSize="30dp"
         app:fillStrokes="true"
         app:fillTriangle="true"
+        app:gridType="rectangle"
+        app:palette="RdBu"
         app:randomColoring="false"
-        />
+        app:variance="5dp" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize">
+
         <ImageView
             android:id="@+id/custom_palette_c0"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_marginLeft = "16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_margin ="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_centerHorizontal="true"
+            android:layout_margin="32dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_marginRight = "16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="32dp"
-            android:layout_alignParentRight="true"
+            android:layout_marginEnd="16dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c3"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_margin="16dp"
-            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_margin="16dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c4"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c5"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_marginBottom="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="32dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c6"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="32dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c7"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
-            android:layout_margin="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_centerVertical="true"
+            android:layout_margin="16dp"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
 
         <ImageView
             android:id="@+id/custom_palette_c8"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#ffffff"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_centerInParent="true"
+            android:background="#ffffff"
             android:clickable="true"
-            android:src="@drawable/color_picked_imageview_border"
-            />
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/color_picked_imageview_border" />
     </RelativeLayout>
 
 </RelativeLayout>

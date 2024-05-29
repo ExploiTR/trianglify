@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public class Triangulation {
-    private List<Triangle2D> triangleList;
+    private final List<Triangle2D> triangleList;
 
     public Triangulation(List<Triangle2D> triangleList) {
         this.triangleList = triangleList;
