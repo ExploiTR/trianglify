@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         );
 
         trianglifyView = findViewById(R.id.trianglify_main_view);
-        trianglifyView.setBitmapQuality(TrianglifyView.DRAWING_CACHE_QUALITY_HIGH);
 
         customPalette = trianglifyView.getPalette();
 
@@ -280,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
         if (permissionStatus) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
         } else {
-            Bitmap bitmap = trianglifyView.getBitmap();
+            Bitmap bitmap = trianglifyView.getBitmap(1080, 2400);
             if (bitmap != null)
                 //addImageToGallery(bitmap, this);
                 Toast.makeText(this, "Feature removed", Toast.LENGTH_LONG).show();
@@ -289,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Deprecated
     public static void addImageToGallery(Bitmap bitmap, Context context) throws IOException {
         String timeStamp = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".png";
         OutputStream os = null;
@@ -310,8 +310,8 @@ public class MainActivity extends AppCompatActivity {
         alertDgBuilder.setPositiveButton("Yes", (dialog, which) -> {
             WallpaperManager trianglifyWallpaperManager = WallpaperManager.getInstance(getApplicationContext());
             try {
-                trianglifyWallpaperManager.setBitmap(view.getBitmap());
-                Toast.makeText(MainActivity.this, "Wallpaper set successfuly", Toast.LENGTH_SHORT).show();
+                trianglifyWallpaperManager.setBitmap(view.getBitmap(1080, 2400));
+                Toast.makeText(MainActivity.this, "Wallpaper set successfully", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 Toast.makeText(MainActivity.this, "Something went wrong, please try again.", Toast.LENGTH_LONG).show();
             }

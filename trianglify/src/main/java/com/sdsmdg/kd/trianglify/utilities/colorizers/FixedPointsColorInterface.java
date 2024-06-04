@@ -30,7 +30,7 @@ public class FixedPointsColorInterface implements ColorInterface {
     private final int gridWidth;
     private final int gridHeight;
 
-    private Boolean randomColoring = false;
+    private final Boolean randomColoring;
 
     public Palette getColorPalette() {
         return colorPalette;
@@ -66,7 +66,7 @@ public class FixedPointsColorInterface implements ColorInterface {
     @Override
     public Triangulation getColororedTriangulation() {
         if (triangulation != null) {
-            for (Triangle2D triangle : triangulation.getTriangleList()) {
+            for (Triangle2D triangle : triangulation.triangleList()) {
                 triangle.setColor(getColorForPoint(triangle.getCentroid()));
             }
         } else {
@@ -235,20 +235,5 @@ public class FixedPointsColorInterface implements ColorInterface {
 
             return ExtendedColor.avg(weightedXColor, weightedYColor).toInt();
         }
-    }
-
-    /**
-     * Calculates average of given numbers without using floating point
-     * operations
-     *
-     * @param args Values to calculate average of
-     * @return Average of values provided
-     */
-    private int avg(int... args) {
-        int sum = 0;
-        for (int arg : args) {
-            sum += arg;
-        }
-        return sum / args.length;
     }
 }

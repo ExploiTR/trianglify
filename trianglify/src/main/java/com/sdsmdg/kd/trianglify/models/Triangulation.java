@@ -8,14 +8,5 @@ import java.util.List;
  * Created by shyam on 12-Mar-17.
  */
 
-public class Triangulation {
-    private final List<Triangle2D> triangleList;
-
-    public Triangulation(List<Triangle2D> triangleList) {
-        this.triangleList = triangleList;
-    }
-
-    public List<Triangle2D> getTriangleList() {
-        return triangleList;
-    }
+public record Triangulation(List<Triangle2D> triangleList) {
 }

@@ -13,14 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        app:bleedX="75dp"
-        app:bleedY="75dp"
+        app:bleedX="100dp"
+        app:bleedY="100dp"
         app:cellSize="30dp"
         app:fillStrokes="true"
         app:fillTriangle="true"
         app:gridType="rectangle"
         app:palette="RdBu"
         app:randomColoring="false"
+        app:randomizeFillStroke="true"
+        app:strokeSize="5.5"
         app:variance="5dp" />
 
     <RelativeLayout
@@ -98,35 +100,35 @@
                 android:id="@+id/random_coloring_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
                 android:layout_toEndOf="@id/layout_middle_point"
                 android:checked="false"
+                android:minHeight="48dp"
                 android:text="@string/random_coloring" />
 
             <CheckBox
                 android:id="@+id/custom_palette_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
                 android:layout_toStartOf="@id/layout_middle_point"
+                android:minHeight="48dp"
                 android:text="@string/custom_palette" />
 
             <CheckBox
                 android:id="@+id/draw_stroke_checkbox"
                 android:layout_width="match_parent"
-                android:minHeight="48dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/custom_palette_checkbox"
                 android:layout_toStartOf="@id/layout_middle_point"
+                android:minHeight="48dp"
                 android:text="@string/draw_strokes" />
 
             <CheckBox
                 android:id="@+id/draw_fill_checkbox"
                 android:layout_width="match_parent"
-                android:minHeight="48dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/random_coloring_checkbox"
                 android:layout_toEndOf="@id/layout_middle_point"
+                android:minHeight="48dp"
                 android:text="@string/fill_triangles" />
 
         </RelativeLayout>
