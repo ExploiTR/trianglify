@@ -1,11 +1,10 @@
 package com.sdsmdg.kd.trianglify.utilities.patterns;
 
+import com.sdsmdg.kd.trianglify.utilities.ThreadLocalRandom;
 import com.sdsmdg.kd.trianglify.utilities.triangulator.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import com.sdsmdg.kd.trianglify.utilities.ThreadLocalRandom;
 
 /**
  * Created by suyash on 12/3/17.
@@ -13,14 +12,14 @@ import com.sdsmdg.kd.trianglify.utilities.ThreadLocalRandom;
 
 public class Rectangle implements Patterns {
     private final ThreadLocalRandom random;
-    private int bleedX = 0;
-    private int bleedY = 0;
+    private final int bleedX;
+    private final int bleedY;
 
-    private int height= 0;
-    private int width= 0;
+    private final int height;
+    private final int width;
 
-    private int cellSize = 0;
-    private int variance= 0;
+    private final int cellSize;
+    private final int variance;
 
     List<Vector2D> grid;
 
@@ -42,6 +41,7 @@ public class Rectangle implements Patterns {
     /**
      * Generates array of points arranged in a grid of rectangles with deviation from their positions
      * on the basis of bleed value.
+     *
      * @return List of Vector2D containing points that resembles rectangular grid
      */
     @Override
@@ -49,8 +49,8 @@ public class Rectangle implements Patterns {
         grid.clear();
 
         int x, y;
-        for (int j = 0; j < height + 2*bleedY; j += cellSize) {
-            for (int i = 0; i < width + 2*bleedX; i += cellSize) {
+        for (int j = 0; j < height + 2 * bleedY; j += cellSize) {
+            for (int i = 0; i < width + 2 * bleedX; i += cellSize) {
                 x = i + random.nextInt(variance);
                 y = j + random.nextInt(variance);
                 this.grid.add(new Vector2D(x, y));

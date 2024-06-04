@@ -1,5 +1,7 @@
 package com.sdsmdg.kd.trianglify.utilities.triangulator;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 
 /**
@@ -49,11 +51,7 @@ public class Triangle2D {
 
         double pca = point.sub(c).cross(a.sub(c));
 
-        if (!hasSameSign(pab, pca)) {
-            return false;
-        }
-
-        return true;
+        return hasSameSign(pab, pca);
     }
 
     /**
@@ -156,11 +154,7 @@ public class Triangle2D {
      *         triangle
      */
     public boolean hasVertex(Vector2D vertex) {
-        if (a == vertex || b == vertex || c == vertex) {
-            return true;
-        }
-
-        return false;
+        return a == vertex || b == vertex || c == vertex;
     }
 
     /**
@@ -229,12 +223,11 @@ public class Triangle2D {
         return color;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Triangle2D[" + a + ", " + b + ", " + c + "]";
     }
-
-
 
     public Vector2D getCentroid() {
         Vector2D centroid = new Vector2D(0,0);

@@ -3,6 +3,7 @@ package com.sdsmdg.kd.trianglify.utilities.patterns;
 
 import com.sdsmdg.kd.trianglify.utilities.triangulator.Vector2D;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import java.util.Random;
  * Created by suyash on 12/3/17.
  */
 
- public class Circle implements Patterns {
+public class Circle implements Patterns {
     private final Random random = new Random();
     private int bleedX = 0;
     private int bleedY = 0;
@@ -95,6 +96,9 @@ import java.util.Random;
 
         this.cellSize = cellSize;
         this.variance = variance;
+
+        //why no one tested this?
+        this.grid = new ArrayList<>();
     }
 
     public List<Vector2D> generate() {

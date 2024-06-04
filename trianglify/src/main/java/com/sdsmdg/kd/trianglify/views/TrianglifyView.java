@@ -43,13 +43,16 @@ public class TrianglifyView extends View implements TrianglifyViewInterface {
     /*changes*/
     private float strokeSizeF = 2.5f;
 
-    private boolean isRandomizeFillStrokeEnabled = false;
+    //no risk taken
 
-    private final Paint reusePaint;
-    private final Paint reusePaint_RFS;
+    private Paint reusePaint;
+    private Paint reusePaint_RFS;
     private final Path reusePath;
     private final SecureRandom random = new SecureRandom();
     private boolean shouldUpdate = false;
+    private boolean isRandomizeFillStrokeEnabled = false;
+    private int randomStaticFillColor = 0x00000000;
+    private boolean externalPaintEnabled = false;
 
     public TrianglifyView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -65,6 +68,13 @@ public class TrianglifyView extends View implements TrianglifyViewInterface {
         reusePaint_RFS = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
         updatePaint();
+    }
+
+    //ofc its a library
+    public void setPaintOverride(@NonNull Paint normalFillPaint, @NonNull Paint randomFillPaint) {
+        this.reusePaint = normalFillPaint;
+        this.reusePaint_RFS = randomFillPaint;
+        externalPaintEnabled = true;
     }
 
     @Override
@@ -88,12 +98,32 @@ public class TrianglifyView extends View implements TrianglifyViewInterface {
         palette = Palette.getPalette(typedArray.getInt(R.styleable.TrianglifyView_palette, 0));
         randomColoring = typedArray.getBoolean(R.styleable.TrianglifyView_randomColoring, false);
         fillViewCompletely = typedArray.getBoolean(R.styleable.TrianglifyView_fillViewCompletely, false);
-        isRandomizeFillStrokeEnabled = typedArray.getBoolean(R.styleable.TrianglifyView_randomizeFillStroke, false);
+        isRandomizeFillStrokeEnabled = typedArray.getBoolean(R.styleable.TrianglifyView_randomizeFillWithStatic, false);
+        randomStaticFillColor = typedArray.getColor(R.styleable.TrianglifyView_randomizeFillColor, randomStaticFillColor);
 
         typedArray.recycle();
 
         if (fillViewCompletely) checkViewFilledCompletely();
     }
+
+    public TrianglifyView setRandomizeFillStrokeEnabled(boolean trigger) {
+        this.isRandomizeFillStrokeEnabled = trigger;
+        return this;
+    }
+
+    public boolean isRandomizeFillStrokeEnabled() {
+        return isRandomizeFillStrokeEnabled;
+    }
+
+    public int getRandomStaticFillColor() {
+        return randomStaticFillColor;
+    }
+
+    public TrianglifyView setRandomStaticFillColor(int randomStaticFillColor) {
+        this.randomStaticFillColor = randomStaticFillColor;
+        return this;
+    }
+
 
     @Override
     public int getBleedX() {
@@ -264,7 +294,7 @@ public class TrianglifyView extends View implements TrianglifyViewInterface {
         return presenter.viewState;
     }
 
-    private TrianglifyView setTriangulation(Triangulation triangulation) {
+    public TrianglifyView setTriangulation(Triangulation triangulation) {
         this.triangulation = triangulation;
         shouldUpdate = true;
         return this;
@@ -281,7 +311,6 @@ public class TrianglifyView extends View implements TrianglifyViewInterface {
         shouldUpdate = true;
         presenter.viewState = Presenter.ViewState.UNCHANGED_TRIANGULATION;
     }
-
 
     private void drawTriangle(Paint paint, Canvas canvas, Triangle2D triangle2D) {
         reusePath.moveTo(triangle2D.a.x - bleedX, triangle2D.a.y - bleedY);
@@ -309,17 +338,16 @@ public class TrianglifyView extends View implements TrianglifyViewInterface {
         else return Paint.Style.STROKE;
     }
 
-    private void setRandomizeFillStrokeEnabled(boolean trigger) {
-        this.isRandomizeFillStrokeEnabled = trigger;
-    }
-
 
     private void updatePaint() {
-        reusePaint.setStrokeWidth(strokeSizeF);
-        reusePaint.setStyle(getPaintStyle());
-        if (isRandomizeFillStrokeEnabled) {
-            reusePaint_RFS.setStrokeWidth(strokeSizeF);
-            reusePaint_RFS.setStyle(Paint.Style.STROKE);
+        if (!externalPaintEnabled) {
+            reusePaint.setStrokeWidth(strokeSizeF);
+            reusePaint.setStyle(getPaintStyle());
+            if (isRandomizeFillStrokeEnabled) {
+                //why update anyways, we can but why?
+                reusePaint_RFS.setStrokeWidth(strokeSizeF);
+                reusePaint_RFS.setStyle(getPaintStyle());
+            }
         }
     }
 
@@ -334,17 +362,14 @@ public class TrianglifyView extends View implements TrianglifyViewInterface {
             shouldUpdate = false;
         }
 
-        if (triangulation != null)
-            for (Triangle2D triangle : triangulation.triangleList()) {
-                int color = triangle.getColor() + 0xff000000;
-                reusePaint.setColor(color);
-                if (isRandomizeFillStrokeEnabled) {
-                    reusePaint_RFS.setColor(color);
-                    drawTriangle_RFS(reusePaint, reusePaint_RFS, canvas, triangle);
-                } else drawTriangle(reusePaint, canvas, triangle);
-            }
+        if (triangulation != null) for (Triangle2D triangle : triangulation.triangleList()) {
+            reusePaint.setColor(triangle.getColor() + 0xff000000);
+            if (isRandomizeFillStrokeEnabled) {
+                reusePaint_RFS.setColor(randomStaticFillColor);
+                drawTriangle_RFS(reusePaint, reusePaint_RFS, canvas, triangle);
+            } else drawTriangle(reusePaint, canvas, triangle);
+        }
         else generateAndInvalidate();
-
     }
 
     public void smartUpdate() {

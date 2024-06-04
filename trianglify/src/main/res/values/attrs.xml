@@ -8,10 +8,12 @@
         <attr name="gridType" format="enum">
             <enum name="rectangle" value="0" />
             <enum name="circle" value="1" />
+            <enum name="triangle" value="2" />
         </attr>
         <attr name="fillTriangle" format="boolean" />
         <attr name="fillStrokes" format="boolean" />
-        <attr name="randomizeFillStroke" format="boolean" />
+        <attr name="randomizeFillWithStatic" format="boolean" />
+        <attr name="randomizeFillColor" format="color" />
         <attr name="strokeSize" format="float" />
         <attr name="randomColoring" format="boolean" />
         <attr name="fillViewCompletely" format="boolean" />

@@ -1,5 +1,6 @@
 package com.sdsmdg.kd.trianglifyexample;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,12 +19,11 @@ import com.sdsmdg.kd.trianglify.models.Palette;
 import com.sdsmdg.kd.trianglify.views.TrianglifyView;
 
 public class CustomPalettePickerActivity extends AppCompatActivity {
-    private static final String TAG = "CustomPaletteActivity";
     public static final String CUSTOM_PALETTE_COLOR_ARRAY = "Custom Palette Color Array";
-
+    private static final String TAG = "CustomPaletteActivity";
+    private final ImageView[] imageViews = new ImageView[9];
     private Palette palette;
     private TrianglifyView trianglifyView;
-    private final ImageView[] imageViews = new ImageView[9];
     private int[] colors = {Color.BLACK, Color.BLUE, Color.BLACK, Color.CYAN, Color.DKGRAY, Color.GREEN, Color.RED, Color.MAGENTA, Color.LTGRAY};
 
     @Override
@@ -66,7 +66,7 @@ public class CustomPalettePickerActivity extends AppCompatActivity {
     private void setupImageViews() {
         for (int i = 0; i < imageViews.length; i++) {
             //I mean it works? lol
-            int resID = getResources().getIdentifier("custom_palette_c" + i, "id", getPackageName());
+            @SuppressLint("DiscouragedApi") int resID = getResources().getIdentifier("custom_palette_c" + i, "id", getPackageName());
             imageViews[i] = findViewById(resID);
             imageViews[i].setBackgroundColor(colors[i] | 0xff000000);
             setupColorPickerForImageView(imageViews[i], i);

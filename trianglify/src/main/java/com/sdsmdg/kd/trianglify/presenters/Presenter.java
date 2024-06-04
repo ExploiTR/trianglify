@@ -1,46 +1,41 @@
 package com.sdsmdg.kd.trianglify.presenters;
 
-
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.sdsmdg.kd.trianglify.models.Triangulation;
+import com.sdsmdg.kd.trianglify.utilities.Utilities;
 import com.sdsmdg.kd.trianglify.utilities.colorizers.ColorInterface;
 import com.sdsmdg.kd.trianglify.utilities.colorizers.FixedPointsColorInterface;
 import com.sdsmdg.kd.trianglify.utilities.patterns.Circle;
 import com.sdsmdg.kd.trianglify.utilities.patterns.Patterns;
 import com.sdsmdg.kd.trianglify.utilities.patterns.Rectangle;
+import com.sdsmdg.kd.trianglify.utilities.patterns.Triangle;
 import com.sdsmdg.kd.trianglify.utilities.triangulator.DelaunayTriangulator;
 import com.sdsmdg.kd.trianglify.utilities.triangulator.NotEnoughPointsException;
 import com.sdsmdg.kd.trianglify.utilities.triangulator.Vector2D;
+import com.sdsmdg.kd.trianglify.views.TrianglifyView;
 import com.sdsmdg.kd.trianglify.views.TrianglifyViewInterface;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * <h1>Presenter.java</h1>
  * <b>Description :</b>
  * P of MVP implemented to present data generated using models
  * to a view.
- *
- * @author suyash
- * @since 18/3/17.
+ * <p>
+ * ...
  */
 
-
 public class Presenter {
-    private TrianglifyViewInterface view;
+    private final TrianglifyViewInterface view;
     private Triangulation triangulation;
-    private TriangleGeneratorTask generatorTask;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    /**
-     * Flag for keeping track of changes in attributes of the view. Helpful in increasing
-     * performance by stopping unnecessary regeneration of triangulation. Look at smartUpdate method for more.
-     * if triangulation is null then value is NULL_TRIANGULATION
-     * if triangulation is unchanged then value is UNCHANGED_TRIANGULATION
-     * if change in fillTriangle or drawStroke then value is PAINT_STYLE_CHANGED
-     * if change in grid width, grid height, variance, bleedX, bleedY, typeGrid or cell size then value is GRID_PARAMETERS_CHANGED
-     * if change in palette or random coloring then value is COLOR_SCHEME_CHANGED
-     */
     public ViewState viewState = ViewState.NULL_TRIANGULATION;
 
     public enum ViewState {
@@ -51,9 +46,6 @@ public class Presenter {
         GRID_PARAMETERS_CHANGED
     }
 
-    /**
-     * flag that keeps track of whether just the color of the triangulation is to be changed or not.
-     */
     private boolean generateOnlyColor;
 
     public Presenter(TrianglifyViewInterface view) {
@@ -76,46 +68,33 @@ public class Presenter {
         }
     }
 
-    /**
-     * generateNewColoredSoupAndInvalidate method is called when only the coloration of the view is to be changed. It sets the
-     * GenerateOnlyColor boolean of presenter to true, so that when generateSoupAndInvalidateView is
-     * called, only the new colors are assigned to the triangles in the triangulation, since the
-     * grid parameters have not been changed, thereby bypassing the unnecessary regeneration of grid and delaunay triangulation.
-     */
     private void generateNewColoredSoupAndInvalidate() {
         setGenerateOnlyColor(true);
         generateSoupAndInvalidateView();
     }
 
-    /**
-     * Generates a grid on basis of selected grid type
-     *
-     * @return Grid of Vector2D
-     */
     private List<Vector2D> generateGrid() {
         int gridType = view.getTypeGrid();
         Patterns patterns;
 
-        if (gridType == TrianglifyViewInterface.GRID_CIRCLE) {
+        if (gridType == TrianglifyViewInterface.GRID_CIRCLE)
             patterns = new Circle(
                     view.getBleedX(), view.getBleedY(), 8, view.getGridHeight(),
                     view.getGridWidth(), view.getCellSize(), view.getVariance());
-        } else {
+        else if (gridType == TrianglifyViewInterface.GRID_TRIANGLE)
+            patterns = new Triangle(
+                    view.getBleedX() + Utilities.dpToPx(250, ((TrianglifyView) this.view).getContext()),
+                    view.getBleedY() + Utilities.dpToPx(250, ((TrianglifyView) this.view).getContext()), view.getGridHeight(),
+                    view.getGridWidth(), view.getCellSize(), view.getVariance());
+        else
             patterns = new Rectangle(
                     view.getBleedX(), view.getBleedY(), view.getGridHeight(),
                     view.getGridWidth(), view.getCellSize(), view.getVariance());
-        }
 
         return patterns.generate();
     }
 
-
-    /**
-     * Generates soup corresponding to current instance parameters
-     *
-     * @return triangulation generated
-     */
-    private Triangulation getSoup() {
+    private Triangulation getSoup() throws NotEnoughPointsException {
         if (generateOnlyColor) {
             triangulation = generateColoredSoup(triangulation);
         } else {
@@ -124,41 +103,22 @@ public class Presenter {
         return triangulation;
     }
 
-    /**
-     * Generates colored triangulation.
-     */
-    private void generateSoup() {
+    private void generateSoup() throws NotEnoughPointsException {
         triangulation = generateTriangulation(generateGrid());
         triangulation = generateColoredSoup(triangulation);
     }
 
-    /**
-     * Creates triangles from a list of points
-     *
-     * @param inputGrid Grid of points for generating triangles
-     * @return List of Triangles generated from list of input points
-     */
-    private Triangulation generateTriangulation(List<Vector2D> inputGrid) {
+    private Triangulation generateTriangulation(List<Vector2D> inputGrid) throws NotEnoughPointsException {
         DelaunayTriangulator triangulator = new DelaunayTriangulator(inputGrid);
-        try {
-            triangulator.triangulate();
-        } catch (NotEnoughPointsException e) {
-            e.printStackTrace();
-        }
+        triangulator.triangulate();
         return new Triangulation(triangulator.getTriangles());
     }
 
-    /**
-     * Colors each triangle in triangulation and stores color as triangle's color variable
-     *
-     * @param inputTriangulation triangulation to color
-     * @return Colored triangulation of input triangulation
-     */
     private Triangulation generateColoredSoup(Triangulation inputTriangulation) {
-        ColorInterface ColorInterface = new FixedPointsColorInterface(inputTriangulation,
+        ColorInterface colorInterface = new FixedPointsColorInterface(inputTriangulation,
                 view.getPalette(), view.getGridHeight() + 2 * view.getBleedY(),
                 view.getGridWidth() + 2 * view.getBleedX(), view.isRandomColoringEnabled());
-        return ColorInterface.getColororedTriangulation();
+        return colorInterface.getColororedTriangulation();
     }
 
     public void clearSoup() {
@@ -166,35 +126,26 @@ public class Presenter {
         viewState = ViewState.NULL_TRIANGULATION;
     }
 
-    /**
-     * generateSoupAndInvalidateView method starts a new thread to regenerate the triangulation so
-     * that the regeneration is not done on the UI thread, thereby reducing the workload on the UI thread.
-     */
+    //Have to rely on Firebase's internal logging system i guess. No way to get this outta here
+    //anyways lets not use AsyncTask
     public void generateSoupAndInvalidateView() {
-        if (generatorTask != null) {
-            generatorTask.cancel(true);
-        }
-        generatorTask = new TriangleGeneratorTask();
-        generatorTask.execute();
-    }
+        Future<Triangulation> future = executorService.submit(() -> {
+            try {
+                return getSoup();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-    /**
-     * TriangleGeneratorTask specifies the task of the thread. It regenerates the triangulation in the background in
-     * accordance to the value of the generateOnlyColor boolean. Upon the generation of the triangulation, it calls
-     * upon the invalidateView method to render the triangulation to the view.
-     */
-
-    class TriangleGeneratorTask extends AsyncTask<Void, Void, Triangulation> {
-
-        @Override
-        protected Triangulation doInBackground(Void... params) {
-            return getSoup();
-        }
-
-        @Override
-        protected void onPostExecute(Triangulation triangulation) {
-            super.onPostExecute(triangulation);
-            view.invalidateView(triangulation);
-        }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            try {
+                Triangulation triangulation = future.get();
+                if (triangulation != null) {
+                    view.invalidateView(triangulation);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
