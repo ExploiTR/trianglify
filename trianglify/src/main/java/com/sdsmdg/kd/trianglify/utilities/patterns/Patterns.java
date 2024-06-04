@@ -12,5 +12,5 @@ import java.util.List;
 
 
 public interface Patterns {
-    public List<Vector2D> generate();
+    List<Vector2D> generate();
 }

@@ -33,12 +33,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    private final int PERMISSION_CODE = 123;
     public TrianglifyView trianglifyView;
     private SeekBar varianceSeekBar;
     private SeekBar cellSizeSeekBar;
@@ -48,33 +49,43 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox randomColoringCheckbox;
     private CheckBox customPaletteCheckbox;
     private Palette customPalette;
-    private final int PERMISSION_CODE = 123;
-
     private ActivityResultLauncher<Intent> customPalettePickerLauncher;
+
+    @Deprecated
+    public static void addImageToGallery(Bitmap bitmap, Context context) throws IOException {
+        String timeStamp = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".png";
+        OutputStream os = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            os = Files.newOutputStream(Paths.get(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + timeStamp));
+        }
+        if (os != null) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            os.flush();
+            os.close();
+            Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        customPalettePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null && data.hasExtra(getResources().getString(R.string.palette_color_array))) {
-                            int[] colors = data.getIntArrayExtra(getResources().getString(R.string.palette_color_array));
-                            if (colors != null) {
-                                customPalette = new Palette(colors);
-                                if (customPaletteCheckbox.isChecked()) {
-                                    trianglifyView.setPalette(customPalette);
-                                    trianglifyView.smartUpdate();
-                                }
-                            }
+        customPalettePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null && data.hasExtra(getResources().getString(R.string.palette_color_array))) {
+                    int[] colors = data.getIntArrayExtra(getResources().getString(R.string.palette_color_array));
+                    if (colors != null) {
+                        customPalette = new Palette(colors);
+                        if (customPaletteCheckbox.isChecked()) {
+                            trianglifyView.setPalette(customPalette);
+                            trianglifyView.smartUpdate();
                         }
                     }
                 }
-        );
+            }
+        });
 
         trianglifyView = findViewById(R.id.trianglify_main_view);
 
@@ -210,10 +221,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void randomizeTrianglifyParameters(TrianglifyView trianglifyView) {
-        Random rnd = new Random(System.currentTimeMillis());
-        trianglifyView.
-                setCellSize(Utilities.dpToPx(rnd.nextInt(10) + 35, this))
-                .setPalette(Palette.getPalette(rnd.nextInt(28))).setRandomColoring(rnd.nextInt(2) == 0)
+        SecureRandom rnd = new SecureRandom();
+        trianglifyView.setCellSize(Utilities.dpToPx(rnd.nextInt(10) + 35, this))
+                .setPalette(Palette.getPalette(rnd.nextInt(28)))
+                .setRandomColoring(rnd.nextInt(2) == 0)
                 .setFillTriangle(rnd.nextInt(2) == 0)
                 .setDrawStrokeEnabled(rnd.nextInt(2) == 0)
                 .setVariance(rnd.nextInt(60));
@@ -232,11 +243,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
-            try {
-                exportImage();
-            } catch (IOException e) {
-                Toast.makeText(MainActivity.this, "Storage access failed!", Toast.LENGTH_LONG).show();
-            }
+//            try {
+//                exportImage();
+//            } catch (IOException e) {
+//                Toast.makeText(MainActivity.this, "Storage access failed!", Toast.LENGTH_LONG).show();
+//            }
+            Toast.makeText(this, "Removed Feature", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.action_about) {
             Intent aboutActivityIntent = new Intent(this, AboutActivity.class);
             startActivity(aboutActivityIntent);
@@ -285,21 +297,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Feature removed", Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(this, "Unable to generate image, please try again", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Deprecated
-    public static void addImageToGallery(Bitmap bitmap, Context context) throws IOException {
-        String timeStamp = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".png";
-        OutputStream os = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            os = Files.newOutputStream(Paths.get(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + timeStamp));
-        }
-        if (os != null) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-            os.flush();
-            os.close();
-            Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show();
         }
     }
 
