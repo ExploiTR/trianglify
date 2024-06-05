@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 /**
  * 2D triangle class implementation.
- * 
+ *
  * @author Johannes Diemke
  */
 public class Triangle2D {
@@ -19,13 +19,10 @@ public class Triangle2D {
     /**
      * Constructor of the 2D triangle class used to create a new triangle
      * instance from three 2D vectors describing the triangle's vertices.
-     * 
-     * @param a
-     *            The first vertex of the triangle
-     * @param b
-     *            The second vertex of the triangle
-     * @param c
-     *            The third vertex of the triangle
+     *
+     * @param a The first vertex of the triangle
+     * @param b The second vertex of the triangle
+     * @param c The third vertex of the triangle
      */
     public Triangle2D(Vector2D a, Vector2D b, Vector2D c) {
         this.a = a;
@@ -36,9 +33,8 @@ public class Triangle2D {
     /**
      * Tests if a 2D point lies inside this 2D triangle. See Real-Time Collision
      * Detection, chap. 5, p. 206.
-     * 
-     * @param point
-     *            The point to be tested
+     *
+     * @param point The point to be tested
      * @return Returns true iff the point lies inside this 2D triangle
      */
     public boolean contains(Vector2D point) {
@@ -62,13 +58,12 @@ public class Triangle2D {
      * When det = 0, the four points are cocircular. If the triangle is oriented
      * clockwise (CW) the result is reversed. See Real-Time Collision Detection,
      * chap. 3, p. 34.
-     * 
-     * @param point
-     *            The point to be tested
+     *
+     * @param point The point to be tested
      * @return Returns true iff the point lies inside the circumcircle through
-     *         the three points a, b, and c of the triangle
+     * the three points a, b, and c of the triangle
      */
-    public boolean isPointInCircumcircle(Vector2D point) {
+    public boolean isPointInCirCumCircle(Vector2D point) {
         final double a11 = a.x - point.x;
         final double a21 = b.x - point.x;
         final double a31 = c.x - point.x;
@@ -98,9 +93,9 @@ public class Triangle2D {
      * det &lt; 0, C lies to the right of the directed line AB, and the triangle
      * ABC is oriented clockwise. When det = 0, the three points are colinear.
      * See Real-Time Collision Detection, chap. 3, p. 32
-     * 
+     *
      * @return Returns true iff the triangle ABC is oriented counterclockwise
-     *         (CCW)
+     * (CCW)
      */
     public boolean isOrientedCCW() {
         final double a11 = a.x - c.x;
@@ -116,9 +111,8 @@ public class Triangle2D {
 
     /**
      * Returns true if this triangle contains the given edge.
-     * 
-     * @param edge
-     *            The edge to be tested
+     *
+     * @param edge The edge to be tested
      * @return Returns true if this triangle contains the edge
      */
     public boolean isNeighbour(Edge2D edge) {
@@ -127,9 +121,8 @@ public class Triangle2D {
 
     /**
      * Returns the vertex of this triangle that is not part of the given edge.
-     * 
-     * @param edge
-     *            The edge
+     *
+     * @param edge The edge
      * @return The vertex of this triangle that is not part of the edge
      */
     public Vector2D getNoneEdgeVertex(Edge2D edge) {
@@ -147,11 +140,10 @@ public class Triangle2D {
     /**
      * Returns true if the given vertex is one of the vertices describing this
      * triangle.
-     * 
-     * @param vertex
-     *            The vertex to be tested
+     *
+     * @param vertex The vertex to be tested
      * @return Returns true if the Vertex is one of the vertices describing this
-     *         triangle
+     * triangle
      */
     public boolean hasVertex(Vector2D vertex) {
         return a == vertex || b == vertex || c == vertex;
@@ -160,9 +152,8 @@ public class Triangle2D {
     /**
      * Returns an EdgeDistancePack containing the edge and its distance nearest
      * to the specified point.
-     * 
-     * @param point
-     *            The point the nearest edge is queried for
+     *
+     * @param point The point the nearest edge is queried for
      * @return The edge of this triangle that is nearest to the specified point
      */
     public EdgeDistancePack findNearestEdge(Vector2D point) {
@@ -181,34 +172,29 @@ public class Triangle2D {
 
     /**
      * Computes the closest point on the given edge to the specified point.
-     * 
-     * @param edge
-     *            The edge on which we search the closest point to the specified
-     *            point
-     * @param point
-     *            The point to which we search the closest point on the edge
+     *
+     * @param edge  The edge on which we search the closest point to the specified
+     *              point
+     * @param point The point to which we search the closest point on the edge
      * @return The closest point on the given edge to the specified point
      */
     private Vector2D computeClosestPoint(Edge2D edge, Vector2D point) {
         final Vector2D ab = edge.b.sub(edge.a);
         float t = point.sub(edge.a).dot(ab) / ab.dot(ab);
 
-        if (t < 0.0f) {
+        if (t < 0.0f)
             t = 0.0f;
-        } else if (t > 1.0f) {
+        else if (t > 1.0f)
             t = 1.0f;
-        }
 
-        return edge.a.add(ab.mult(t));
+        return edge.a.add(ab.multiply(t));
     }
 
     /**
      * Tests if the two arguments have the same sign.
-     * 
-     * @param a
-     *            The first floating point argument
-     * @param b
-     *            The second floating point argument
+     *
+     * @param a The first floating point argument
+     * @param b The second floating point argument
      * @return Returns true iff both arguments have the same sign
      */
     private boolean hasSameSign(double a, double b) {
@@ -230,9 +216,6 @@ public class Triangle2D {
     }
 
     public Vector2D getCentroid() {
-        Vector2D centroid = new Vector2D(0,0);
-        centroid.x = ((a.x) + (b.x) + (c.x))/3;
-        centroid.y = ((a.y) + (b.y) + (c.y))/3;
-        return centroid;
+        return new Vector2D(((a.x) + (b.x) + (c.x)) / 3, ((a.y) + (b.y) + (c.y)) / 3);
     }
 }

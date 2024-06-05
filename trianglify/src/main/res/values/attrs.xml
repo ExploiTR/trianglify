@@ -12,8 +12,6 @@
         </attr>
         <attr name="fillTriangle" format="boolean" />
         <attr name="fillStrokes" format="boolean" />
-        <attr name="randomizeFillWithStatic" format="boolean" />
-        <attr name="randomizeFillColor" format="color" />
         <attr name="strokeSize" format="float" />
         <attr name="randomColoring" format="boolean" />
         <attr name="fillViewCompletely" format="boolean" />

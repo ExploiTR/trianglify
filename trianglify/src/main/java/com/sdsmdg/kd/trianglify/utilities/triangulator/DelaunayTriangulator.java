@@ -150,7 +150,7 @@ public class DelaunayTriangulator {
          * If the triangle has a neighbor, then legalize the edge
          */
         if (neighbourTriangle != null) {
-            if (neighbourTriangle.isPointInCircumcircle(newVertex)) {
+            if (neighbourTriangle.isPointInCirCumCircle(newVertex)) {
                 triangleSoup.remove(triangle);
                 triangleSoup.remove(neighbourTriangle);
 

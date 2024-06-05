@@ -65,13 +65,12 @@ public class FixedPointsColorInterface implements ColorInterface {
 
     @Override
     public Triangulation getColororedTriangulation() {
-        if (triangulation != null) {
-            for (Triangle2D triangle : triangulation.triangleList()) {
+        if (triangulation != null)
+            for (Triangle2D triangle : triangulation.triangleList())
                 triangle.setColor(getColorForPoint(triangle.getCentroid()));
-            }
-        } else {
+        else
             Log.i(TAG, "colorizeTriangulation: Triangulation cannot be null!");
-        }
+
         return getTriangulation();
     }
 

@@ -1,5 +1,7 @@
 package com.sdsmdg.kd.trianglify.utilities.triangulator;
 
+import androidx.annotation.NonNull;
+
 /**
  * 2D vector class implementation.
  * 
@@ -52,7 +54,7 @@ public class Vector2D {
      *            The scalar to be multiplied by this
      * @return A new instance holding the result of the multiplication
      */
-    public Vector2D mult(float scalar) {
+    public Vector2D multiply(float scalar) {
         return new Vector2D(this.x * scalar, this.y * scalar);
     }
 
@@ -89,6 +91,7 @@ public class Vector2D {
         return this.y * vector.x - this.x * vector.y;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Vector2D[" + x + ", " + y + "]";
