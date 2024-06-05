@@ -21,8 +21,6 @@
         app:gridType="circle"
         app:palette="RdBu"
         app:randomColoring="false"
-        app:randomizeFillColor="#FF0000"
-        app:randomizeFillWithStatic="false"
         app:strokeSize="5.5"
         app:variance="5dp" />
 
