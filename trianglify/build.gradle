@@ -11,6 +11,10 @@ android {
         minSdkVersion 22
         targetSdkVersion 34
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        aarMetadata {
+            minCompileSdk = 22
+        }
     }
 
     buildTypes {
@@ -34,15 +38,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+    publishing {
+        multipleVariants {
+            allVariants()
+            withSourcesJar()
+        }
+    }
 }
 
 publishing {
     publications {
-        // Define the release publication
         release(MavenPublication) {
             groupId = 'com.github.ExploiTR'
             artifactId = 'trianglify'
-            version = '1.0.2'
+            version = '1.0.3'
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'myrepo'
+            url = layout.buildDirectory.dir("repo/")
         }
     }
 }
@@ -58,4 +75,27 @@ dependencies {
     testImplementation libs.junit
     testImplementation libs.mockito.core
     implementation(platform(libs.kotlin.bom))
+}
+
+tasks.register('generateRepo', Zip) {
+    dependsOn 'copyAar'
+    def publishTask = tasks.named('publishReleasePublicationToMyrepoRepository')
+    from publishTask.map { it.getRepository().getUrl() }
+    into 'mylibrary'
+    archiveFileName.set('mylib.zip')
+}
+
+tasks.register('copyAar', Copy) {
+    dependsOn 'assembleRelease'
+    from(layout.buildDirectory.dir("outputs/aar"))
+    include("*.aar")
+    into(layout.buildDirectory.dir("repo/com/github/ExploiTR/trianglify/1.0.3"))
+
+    doLast {
+        println "AAR file copied to" + layout.buildDirectory.dir("repo/com/github/ExploiTR/trianglify/1.0.3")
+    }
+}
+
+tasks.named('publish').configure {
+    dependsOn 'copyAar'
 }
