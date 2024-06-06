@@ -4,7 +4,8 @@ colorpicker = "0.0.15"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-appcompat = "1.6.1"
+appcompat = "1.7.0"
+kotlinBom = "1.8.22"
 material = "1.12.0"
 constraintlayout = "2.1.4"
 mockitoCore = "5.12.0"
@@ -18,6 +19,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBom" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }

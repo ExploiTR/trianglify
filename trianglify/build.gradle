@@ -40,9 +40,9 @@ publishing {
     publications {
         // Define the release publication
         release(MavenPublication) {
-            groupId = 'com.sdsmdg.kd'
+            groupId = 'com.github.ExploiTR'
             artifactId = 'trianglify'
-            version = '2.0.0'
+            version = '1.0.2'
         }
     }
 }
@@ -53,7 +53,9 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
         exclude group: 'androidx.annotation', module: 'annotation'
     })
+
     implementation libs.appcompat
     testImplementation libs.junit
     testImplementation libs.mockito.core
+    implementation(platform(libs.kotlin.bom))
 }

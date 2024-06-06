@@ -19,8 +19,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.ExploiTR.trianglifyexample.R;
-
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
 

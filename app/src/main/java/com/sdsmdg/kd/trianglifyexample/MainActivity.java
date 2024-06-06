@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.github.ExploiTR.trianglifyexample.R;
+
 import com.sdsmdg.kd.trianglify.models.Palette;
 import com.sdsmdg.kd.trianglify.utilities.Utilities;
 import com.sdsmdg.kd.trianglify.views.TrianglifyView;
