@@ -1,7 +1,6 @@
 package com.sdsmdg.kd.trianglifyexample;
 
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -19,6 +18,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.github.ExploiTR.trianglifyexample.R;
 
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
@@ -74,53 +75,39 @@ public class AboutActivity extends AppCompatActivity {
 
 
         versiontTextView.setText(getString(R.string.about_activity_version) + versionName);
-        openSourceLicense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                displayOpenSourceLicenses();
-            }
+        openSourceLicense.setOnClickListener(v -> displayOpenSourceLicenses());
+
+        githubLinkBtn.setOnClickListener(v -> {
+            Uri uri = Uri.parse("https://github.com/sdsmdg/trianglify");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
         });
 
-        githubLinkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri = Uri.parse("https://github.com/sdsmdg/trianglify");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+        reviewLinkBtn.setOnClickListener(v -> {
+            Uri uri = Uri.parse("market://details?id=" + v.getContext().getPackageName());
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             }
-        });
-
-        reviewLinkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri = Uri.parse("market://details?id=" + v.getContext().getPackageName());
-                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                }
-                try {
-                    startActivity(goToMarket);
-                } catch (ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + v.getContext().getPackageName())));
-                }
+            try {
+                startActivity(goToMarket);
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + v.getContext().getPackageName())));
             }
         });
 
         //TODO: Update link when app releases to marketplace
 
-        shareLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_application_text) +
-                        " " + getResources().getString(R.string.trianglify_store_short_link));
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
-            }
+        shareLink.setOnClickListener(v -> {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_application_text) +
+                    " " + getResources().getString(R.string.trianglify_store_short_link));
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
         });
     }
 
@@ -129,29 +116,18 @@ public class AboutActivity extends AppCompatActivity {
         alertDialog.setTitle(this.getApplicationInfo().name);
         alertDialog.setMessage(getResources().getString(R.string.license_text));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "view license", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getResources().getString(R.string.license_link))));
-            }
-        });
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "view license", (dialog, which) -> startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse(getResources().getString(R.string.license_link)))));
         alertDialog.show();
     }
 
     // Sets action for Action Bar Items
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }

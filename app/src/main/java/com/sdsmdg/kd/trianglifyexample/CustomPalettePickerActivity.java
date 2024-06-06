@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.github.ExploiTR.trianglifyexample.R;
 import com.sdsmdg.kd.trianglify.models.Palette;
 import com.sdsmdg.kd.trianglify.views.TrianglifyView;
 
