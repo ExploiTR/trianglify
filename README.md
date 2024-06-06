@@ -4,12 +4,5 @@
 - Does not create a path and paint object on every single draw calls anymore
 - Minor Bug fixes and code-cleaups (replacing deprecated apis like asynctask, improved formatting in some places etc)
 
-# Gradle
-#### Check from Jitpack, get the latest rel compiled, if not already.
-> https://jitpack.io/#ExploiTR/trianglify
-```gradle
-implementation 'com.github.ExploiTR:trianglify:latest_rel'
-```
-
 # License
 Trianglify is licensed under [`MIT license`](LICENSE.md)
